@@ -1,39 +1,31 @@
-const WebSocket = require('ws');
-
-class AgarClient {
-  constructor(partyCode, region, mode) {
-    this.partyCode = partyCode;
-    this.region = region;
-    this.mode = mode;
-    this.ws = null;
+class AgarioClient {
+  constructor() {
+    this.nick = "Bot";
   }
 
-  connect() {
-    const url = `wss://agar.io/?party_id=${this.partyCode}`;
-    this.ws = new WebSocket(url);
-
-    this.ws.on('open', () => {
-      console.log(`✅ Bot conectado a ${this.partyCode}`);
-      this.sendHello();
-    });
-
-    this.ws.on('message', (data) => {
-      // Aquí iría la lógica para alimentar, seguir, dividir, etc.
-    });
-
-    this.ws.on('close', () => {
-      console.log(`🔴 Bot desconectado de ${this.partyCode}`);
-    });
-
-    this.ws.on('error', (err) => {
-      console.error(`❌ Error de conexión:`, err.message);
-    });
+  connect(partyCode, region) {
+    console.log(`Bot ${this.nick} intentando conectar a ${partyCode} (${region})...`);
+    // Aquí iría la lógica real de conexión al servidor de Agar.io
+    setTimeout(() => {
+      this.onConnected && this.onConnected();
+    }, 1000);
   }
 
-  sendHello() {
-    const helloMessage = Buffer.from([254, 5, 0, 0, 0]);
-    this.ws.send(helloMessage);
+  setFollowMouse(state) {
+    console.log(`${this.nick} seguirá el mouse: ${state}`);
+  }
+
+  setBurstMode() {
+    console.log(`${this.nick} en modo burst 💥`);
+  }
+
+  on(event, callback) {
+    if (event === "connected") {
+      this.onConnected = callback;
+    } else if (event === "error") {
+      this.onError = callback;
+    }
   }
 }
 
-module.exports = AgarClient;
+module.exports = AgarioClient;
